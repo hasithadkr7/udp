@@ -281,7 +281,7 @@ main() {
     echo "Forecasting with Forecast Date: $forecast_date @ $forecast_time, Config File: $CONFIG_FILE, Root Dir: $ROOT_DIR"
     echo "With Custom Timeseries Start Date: $timeseries_start_date @ $timeseries_start_time using RF data of $rf_forecasted_date"
 
-    local isWRF=$(isWRFAvailable)
+    local isWRF=$(isWRFAvailable ${forecast_date})
     local forecastStatus=$(alreadyForecast ${ROOT_DIR}/${STATUS_FILE} ${forecast_date})
     if [ ${FORCE_RUN} == true ]; then
         forecastStatus=0
@@ -440,13 +440,13 @@ main() {
 }
 
 isWRFAvailable() {
-    local File_Pattern="*$rf_forecasted_date*.txt"
-    if [ -z "$(find ${RF_DIR_PATH} -name ${File_Pattern})" ]; then
+    result=`./WrfTrigger.py $1`
+    if [ "$result" == "proceed" ]; then
       # echo "empty (Unable find files $File_Pattern)"
-      echo 0
+      echo 1
     else
       # echo "Found WRF output"
-      echo 1
+      echo 0
     fi
 }
 
@@ -456,7 +456,6 @@ writeForecastStatus() {
 
 alreadyForecast() {
     local forecasted=0
-
     while IFS='' read -r line || [[ -n "$line" ]]; do
         if [ $2 == ${line} ]; then
             forecasted=1

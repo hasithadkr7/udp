@@ -59,8 +59,8 @@ try:
     KUB_DIR_PATH = './WRF/kelani-upper-basin'
     OUTPUT_DIR = './OUTPUT'
     # Kelani Upper Basin
-    # KUB_OBS_ID = 'b0e008522be904bcf71e290b3b0096b33c3e24d9b623dcbe7e58e7d1cc82d0db'
-    KUB_OBS_ID = 'fb575cb25f1e3d3a07c84513ea6a91c8f2fb98454df1a432518ab98ad7182861'  # wrf0, kub_mean, 0-d
+    KUB_OBS_ID = 'b0e008522be904bcf71e290b3b0096b33c3e24d9b623dcbe7e58e7d1cc82d0db'
+    #KUB_OBS_ID = 'fb575cb25f1e3d3a07c84513ea6a91c8f2fb98454df1a432518ab98ad7182861'  # wrf0, kub_mean, 0-d
     # Kelani Lower Basin
     # KLB_OBS_ID = '3fb96706de7433ba6aff4936c9800a28c9599efd46cbc9216a5404aab812d76a'
     KLB_OBS_ID = '69c464f749b36d9e55e461947238e7ed809c2033e75ae56234f466eec00aee35'  # wrf0, klb_mean, 0-d
@@ -158,20 +158,37 @@ try:
     print(' RFTOCSV run for', date, '@', time, tag)
     print(' With Custom starting', startDate, '@', startTime, ' using RF data of ', rfForecastedDate)
 
+    mean_ref_file_path = '/mnt/disks/curwsl_nfs_1/results/wrf0_'+rfForecastedDate+'_18:00_0000/kub_mean_rf'
+    print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-----------------------mean_ref_file_path: ',mean_ref_file_path)
+
     # TODO: Need to be replace by retrieving data from database
     KELANI_UPPER_BASIN_VALUES = OrderedDict()
-    for catchment in KELANI_UPPER_BASIN:
-        for filename in glob.glob(os.path.join(KUB_DIR_PATH, catchment + '-' + rfForecastedDate + '*.txt')):
-            print('Start Operating on (Kelani Upper Basin) ', filename)
-            csvCatchment = csv.reader(open(filename, 'r'), delimiter=' ', skipinitialspace=True)
-            csvCatchment = list(csvCatchment)
-            for row in csvCatchment:
-                # print(row[0].replace('_', ' '), row[1].strip(' \t'))
-                d = datetime.datetime.strptime(row[0].replace('_', ' '), '%Y-%m-%d %H:%M:%S')
-                key = d.timestamp()
-                if key not in KELANI_UPPER_BASIN_VALUES:
-                    KELANI_UPPER_BASIN_VALUES[key] = 0
-                KELANI_UPPER_BASIN_VALUES[key] += float(row[1].strip(' \t')) * KELANI_UPPER_BASIN_WEIGHTS[catchment]
+    # for catchment in KELANI_UPPER_BASIN:
+    #     for filename in glob.glob(os.path.join(KUB_DIR_PATH, catchment + '-' + rfForecastedDate + '*.txt')):
+    #         print('Start Operating on (Kelani Upper Basin) ', filename)
+    #         csvCatchment = csv.reader(open(filename, 'r'), delimiter=' ', skipinitialspace=True)
+    #         csvCatchment = list(csvCatchment)
+    #         for row in csvCatchment:
+    #             # print(row[0].replace('_', ' '), row[1].strip(' \t'))
+    #             #d = datetime.datetime.strptime(row[0].replace('_', ' '), '%Y-%m-%d %H:%M:%S')
+    #             d = datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S')
+    #             key = d.timestamp()
+    #             if key not in KELANI_UPPER_BASIN_VALUES:
+    #                 KELANI_UPPER_BASIN_VALUES[key] = 0
+    #             KELANI_UPPER_BASIN_VALUES[key] += float(row[1].strip(' \t')) * KELANI_UPPER_BASIN_WEIGHTS[catchment]
+
+    for filename in glob.glob(os.path.join(mean_ref_file_path, 'kub_mean_rf.txt')):
+        print('Start Operating on (Kelani Upper Basin) ', filename)
+        csvCatchment = csv.reader(open(filename, 'r'), delimiter='\t', skipinitialspace=True)
+        csvCatchment = list(csvCatchment)
+        for row in csvCatchment:
+            # print(row[0].replace('_', ' '), row[1].strip(' \t'))
+            # d = datetime.datetime.strptime(row[0].replace('_', ' '), '%Y-%m-%d %H:%M:%S')
+            d = datetime.datetime.strptime(row[0], '%Y-%m-%d %H:%M:%S')
+            key = d.timestamp()
+            if key not in KELANI_UPPER_BASIN_VALUES:
+                KELANI_UPPER_BASIN_VALUES[key] = 0
+            KELANI_UPPER_BASIN_VALUES[key] += float(row[1].strip(' \t')) * KELANI_UPPER_BASIN_WEIGHTS[catchment]
 
     # TODO: Need to be replace by using KLB-Mean generate by WRF
     # TODO: Get data from database directly

@@ -154,6 +154,8 @@ try:
     RUN_FLO2D_FILE = 'RUN_FLO2D.json'
     UTC_OFFSET = '+00:00:00'
 
+    FLO2D_MODEL = "FLO2D"
+
     MYSQL_HOST = "localhost"
     MYSQL_USER = "root"
     MYSQL_DB = "curw"
@@ -168,6 +170,9 @@ try:
     if 'OUTPUT_DIR' in CONFIG:
         OUTPUT_DIR = CONFIG['OUTPUT_DIR']
 
+    if 'FLO2D_MODEL' in CONFIG:
+        FLO2D_MODEL = CONFIG['FLO2D_MODEL']
+
     if 'MYSQL_HOST' in CONFIG:
         MYSQL_HOST = CONFIG['MYSQL_HOST']
     if 'MYSQL_USER' in CONFIG:
@@ -179,7 +184,9 @@ try:
 
     adapter = MySQLAdapter(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWORD, db=MYSQL_DB)
     # TODO: Pass source name as a paramter to script
-    flo2d_source = adapter.get_source(name='FLO2D')
+
+    flo2d_source = adapter.get_source(name=FLO2D_MODEL)
+
     try:
         flo2d_source = json.loads(flo2d_source.get('parameters', "{}"))
     except Exception as e:

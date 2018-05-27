@@ -29,11 +29,21 @@
     "WATER_DISCHARGE_DIR"     : "water_discharge",
     "WATER_DISCHARGE_FILE"    : "water_discharge.txt",
 
+    "FLO2D_MODEL"       : "FLO2D_150",
+
     "HOST_ADDRESS"      : "localhost",
     "HOST_PORT"         : 8080,
 
     "MYSQL_HOST"        : "localhost",
     "MYSQL_USER"        : "root",
     "MYSQL_PASSWORD"    : "",
-    "MYSQL_DB"          : "curw"
+    "MYSQL_DB"          : "curw",
+
+    "INITIAL_PATH_PREFIX" : "results/wrf0",
+    "KEY_FILE_PATH" : "/hec-hms/uwcc-admin.json",
+    "BUCKET_NAME" : "curwsl_nfs_1",
+    "NET_CDF_FILE" : "wrfout_d03-18:00:00_rf",
+    "WRF_DATA_DIR" : "/home/uwcc-admin/udp/wrf_data/",
+
+    "HEC_DATA_DIR" : "/home/uwcc-admin/udp/hec_data/"
 }
